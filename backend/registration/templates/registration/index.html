@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Registration</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            padding: 40px;
+            background: linear-gradient(to right, #e0eafc, #cfdef3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1, h2 {
+            color: #333;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        form {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            max-width: 700px;
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        form input {
+            padding: 10px;
+            margin: 10px 10px 10px 0;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            width: calc(48%);
+            font-size: 14px;
+        }
+
+        form input:last-child {
+            width: 100%;
+        }
+
+        form button {
+            background: #2d89ef;
+            color: white;
+            padding: 10px 20px;
+            font-weight: bold;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+            display: block;
+        }
+
+        form button:hover {
+            background: #1e5bb8;
+            transform: scale(1.03);
+            box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+        }
+
+        table {
+            width: 100%;
+            max-width: 1000px;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+            margin-bottom: 50px;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background-color: #f5f5f5;
+        }
+
+        td a {
+            color: #2d89ef;
+            text-decoration: none;
+            margin: 0 5px;
+            font-weight: bold;
+        }
+
+        td a:hover {
+            text-decoration: underline;
+        }
+
+        .alert {
+            padding: 12px;
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #f5c6cb;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            width: 100%;
+            max-width: 700px;
+            text-align: center;
+            animation: fadeOut 0.5s ease-in-out 4.5s forwards;
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                height: 0;
+                padding: 0;
+                margin: 0;
+                overflow: hidden;
+            }
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <h1>Register New User</h1>
+
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-row">
+                <input  type="number" name="id" placeholder="ID" required value="{{ old_data.id|default:'' }}">
+                <input type="text" name="name" placeholder="Name" required value="{{ old_data.name|default:'' }}">
+            </div>
+            <div class="form-row">
+                <input type="email" name="email" placeholder="Email" required value="{{ old_data.email|default:'' }}">
+                <input type="text" name="phoneno" placeholder="Phone Number" required value="{{ old_data.phoneno|default:'' }}">
+            </div>
+            <input type="date" name="dob" required value="{{ old_data.dob|default:'' }}">
+            <button type="submit">Add User</button>
+        </form>
+
+        <h2>Registered Users</h2>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Date of Birth</th>
+                <th>Actions</th>
+            </tr>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.name }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.phoneno }}</td>
+                <td>{{ user.date_of_birth }}</td>
+                <td>
+                    <a href="{% url 'update' user.id %}">Update</a>
+                    <a href="{% url 'delete' user.id %}">Delete</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="6">No users found.</td></tr>
+            {% endfor %}
+        </table>
+    </div>
+</body>
+</html>
